@@ -33,3 +33,131 @@ const render = require("./lib/htmlRenderer");
 // for further information. Be sure to test out each class and verify it generates an
 // object with the correct structure and methods. This structure will be crucial in order
 // for the provided `render` function to work! ```
+const employees = [];
+
+const addEmployee = () => {
+  inquirer
+    .prompt([
+      {
+        name: "name",
+        type: "input",
+        message: "Please input your first name.",
+      },
+      {
+        name: "id",
+        type: "input",
+        message: "Please input your employee ID.",
+      },
+      {
+        name: "email",
+        type: "input",
+        message: "Please input your employee e-mail address.",
+      },
+      {
+        name: "role",
+        type: "list",
+        message: "Please choose your employed role.",
+        choices: ["Engineer", "Intern", "Manager"],
+      },
+      {
+        name: "github",
+        type: "input",
+        message: "Please input your github username",
+        when: (answer) => answer.role === "Engineer",
+      },
+      {
+        name: "school",
+        type: "input",
+        message: "Please input the name of the most recent school you've graduated from.",
+        when: (answer) => answer.role === "Intern",
+      },
+      {
+        name: "officeNumber",
+        type: "input",
+        message: "Please input your office number",
+        when: (answer) => answer.role === "Manager",
+      },
+    ])
+    .then((answer) => {
+      let choice = answer.role;
+      switch (choice) {
+        case "Engineer":
+          let engineer = new Engineer(
+            answer.name,
+            answer.id,
+            answer.email,
+            answer.github
+          );
+          console.log(engineer);
+          employees.push(engineer);
+          console.log(employees);
+          addAnother();
+
+          break;
+
+        case "Intern":
+          let intern = new Intern(
+            answer.name,
+            answer.id,
+            answer.email,
+            answer.school
+          );
+          employees.push(intern);
+          console.log(intern);
+          addAnother();
+
+          break;
+
+        case "Manager":
+          let manager = new Manager(
+            answer.name,
+            answer.id,
+            answer.email,
+            answer.officeNumber
+          );
+          employees.push(manager);
+          console.log(manager);
+          addAnother();
+
+          break;
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+const addAnother = () => {
+  inquirer
+    .prompt([
+      {
+        name: "newEmployee",
+        type: "list",
+        message: "Would you like to add another employee?",
+        choices: ["Yes", "No"],
+      },
+    ])
+    .then((answer) => {
+      if (answer.newEmployee === "Yes") {
+        addEmployee();
+      } else {
+        console.log(employees);
+        writeFile();
+        console.log("exit");
+      }
+    });
+};
+
+addEmployee();
+
+
+const writeFile = () => {
+
+  if (!fs.existsSync(OUTPUT_DIR)){
+    fs.mkdirSync(OUTPUT_DIR);
+  };
+  
+fs.writeFileSync(outputPath, render(employees));
+console.log("Wrote to team.html file successfully");
+
+};
