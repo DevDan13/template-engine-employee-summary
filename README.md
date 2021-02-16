@@ -13,7 +13,7 @@
 
 <br>
 
-![Video Demo](public\img\Employee-Search.png)
+![Video Demo](https://github.com/DevDan13/images/blob/main/gif/template-demo.gif?raw=true)
 
 ## Description
 This app allows a user to sort through a table of employees by clicking the sort button and search for employees using the search bar.  This app was build using react with useEffect and useState hooks.
